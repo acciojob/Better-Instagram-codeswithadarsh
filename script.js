@@ -1,49 +1,51 @@
-//your code here
-// get all the draggable elements
-const images = document.querySelectorAll(".image");
+// Get all pic elements
+var pics = document.querySelectorAll(".pic");
 
-let draggedElement = null;
-
-// add event listeners to all draggable elements
-images.forEach((image) => {
-  image.addEventListener("dragstart", dragStart);
-  image.addEventListener("dragover", dragOver);
-  image.addEventListener("dragenter", dragEnter);
-  image.addEventListener("dragleave", dragLeave);
-  image.addEventListener("drop", drop);
-  image.addEventListener("dragend", dragEnd);
+// Add drag and drop event listeners to each pic element
+pics.forEach(function(pic) {
+	pic.addEventListener("dragstart", dragStart);
+	pic.addEventListener("dragover", dragOver);
+	pic.addEventListener("dragenter", dragEnter);
+	pic.addEventListener("dragleave", dragLeave);
+	pic.addEventListener("drop", drop);
+	pic.addEventListener("dragend", dragEnd);
 });
 
-// functions for drag and drop
-function dragStart() {
-  draggedElement = this;
-  setTimeout(() => {
-    this.classList.add("hidden");
-  }, 0);
+// Global variables for drag and drop operations
+var sourcePic = null;
+var targetPic = null;
+
+// Drag and drop event functions
+function dragStart(event) {
+	sourcePic = event.target;
 }
 
-function dragOver(e) {
-  e.preventDefault();
+function dragOver(event) {
+	event.preventDefault();
 }
 
-function dragEnter(e) {
-  e.preventDefault();
-  this.classList.add("hovered");
+function dragEnter(event) {
+	targetPic = event.target;
+	targetPic.classList.add("highlight");
 }
 
-function dragLeave() {
-  this.classList.remove("hovered");
+function dragLeave(event) {
+	targetPic = event.target;
+	targetPic.classList.remove("highlight");
 }
 
-function drop() {
-  const currentElement = this;
-  const currentImg = currentElement.style.backgroundImage;
-  const draggedImg = draggedElement.style.backgroundImage;
-  currentElement.style.backgroundImage = draggedImg;
-  draggedElement.style.backgroundImage = currentImg;
+function drop(event) {
+	event.preventDefault();
+	targetPic = event.target;
+
+	// Swap background images of source and target pics
+	var sourceBG = sourcePic.style.backgroundImage;
+	sourcePic.style.backgroundImage = targetPic.style.backgroundImage;
+	targetPic.style.backgroundImage = sourceBG;
 }
 
-function dragEnd() {
-  this.classList.remove("hidden");
-  this.classList.remove("hovered");
+function dragEnd(event) {
+	// Remove highlight from target pic
+	targetPic = event.target;
+	targetPic.classList.remove("highlight");
 }
